@@ -19,10 +19,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/konten/create', [KontenController::class, 'store']);
     Route::patch('/konten/update/{id}', [KontenController::class, 'update']);
     Route::delete('/konten/delete/{id}', [KontenController::class, 'destroy']);
+    Route::get('/konten/kategori/{kategori}', [KontenController::class, 'getKontenByKategori']);
     Route::get('/komen', [KomenController::class, 'index']);
     Route::get('/komen/{id}', [KomenController::class, 'show']);
     Route::get('/komen/konten/{id_konten}', [KomenController::class, 'getByKonten']);
-    Route::post('/komen/create', [KomenController::class, 'store']);
+    Route::post('/konten/{id_konten}/create', [KomenController::class, 'store']);
     Route::patch('/komen/update/{id}', [KomenController::class, 'update']);
     Route::delete('/komen/delete/{id}', [KomenController::class, 'destroy']);
     Route::get('/logout', [AuthController::class, 'logout']);

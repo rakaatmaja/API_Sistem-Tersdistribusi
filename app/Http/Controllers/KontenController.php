@@ -23,7 +23,6 @@ class KontenController extends Controller
         ]);
 
         $konten = Konten::create($request->all());
-
         return response()->json($konten, 201);
     }
 
@@ -53,6 +52,20 @@ class KontenController extends Controller
         $konten = Konten::findOrFail($id);
         $konten->delete();
 
+        return response()->json(['status' => 'Delete successfully'], 200);
         return response()->json(null, 204);
+    }
+
+    public function getKontenByKategori($kategori)
+    {
+        $kontens = Konten::where('kategori_konten', $kategori)->get();
+
+        if ($kontens->isEmpty()) {
+            return response()->json([
+                'message' => 'No content found in this category.'
+            ], 404);
+        }
+
+        return response()->json($kontens, 200);
     }
 }

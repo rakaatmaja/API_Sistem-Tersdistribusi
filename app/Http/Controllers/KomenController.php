@@ -17,17 +17,17 @@ class KomenController extends Controller
         return response()->json($komens);
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $id_konten)
     {
         $request->validate([
             'komen' => 'required|string',
-            'id_konten' => 'required|exists:kontens,id_konten'
+            
         ]);
 
         $komen = new Komen([
             'komen' => $request->komen,
             'id' => Auth::id(),
-            'id_konten' => $request->id_konten,
+            'id_konten' => $id_konten,
             'timestamp' => now()
         ]);
 
@@ -49,7 +49,9 @@ class KomenController extends Controller
         ]);
 
         $komen = Komen::findOrFail($id);
-        $this->authorize('update', $komen);
+        if ($komen->id !== Auth::id()) {
+            return response()->json(['error' => 'anda bukan pemilik komen'], 403);
+        }
         
         $komen->komen = $request->komen;
         $komen->save();
@@ -60,11 +62,13 @@ class KomenController extends Controller
     public function destroy($id)
     {
         $komen = Komen::findOrFail($id);
-        $this->authorize('delete', $komen);
+        if ($komen->id !== Auth::id()) {
+            return response()->json(['error' => 'anda bukan pemilik komen'], 403);
+        }
         
         $komen->delete();
 
-        return response()->json(null, 204);
+        return response()->json(['status' => 'Delete successfully'], 200);
     }
 
     public function getByKonten($id_konten)
