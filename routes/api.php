@@ -17,7 +17,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/konten',[KontenController::class, 'index']);
     Route::get('/konten/{id}',[KontenController::class, 'show']);
     Route::post('/konten/create', [KontenController::class, 'store']);
-    Route::patch('/konten/update/{id}', [KontenController::class, 'update']);
+    Route::post('/konten/update/{id}', [KontenController::class, 'update']);
     Route::delete('/konten/delete/{id}', [KontenController::class, 'destroy']);
     Route::get('/konten/kategori/{kategori}', [KontenController::class, 'getKontenByKategori']);
     Route::get('/komen', [KomenController::class, 'index']);
