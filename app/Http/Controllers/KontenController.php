@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Konten;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class KontenController extends Controller
 {
@@ -19,17 +20,21 @@ class KontenController extends Controller
             'title' => 'required|string|max:255',
             'deskripsi' => 'required|string',
             'kategori_konten' => 'required|in:food,news,travel',
-            'gambar_konten' => 'nullable|image',
+            'gambar_konten' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
-        if ($request->hasFile('gambar_konten')) {
-            $image = $request->file('gambar_konten');
-            $imageName = time().'.'.$image->getClientOriginalExtension();
-            $image->move(public_path('images'), $imageName);
-            $request->merge(['gambar_konten' => $imageName]);
-        }
+        $data = $request->all();
 
-        $konten = Konten::create($request->all());
+        if ($request->hasFile('gambar_konten')) {
+            $file = $request->file('gambar_konten');
+            $tanggalSekarang = now()->format('Ymd_His'); 
+            $extension = $file->getClientOriginalExtension();
+            $fileName = $tanggalSekarang . '.' . $extension;
+            $path = $file->storeAs('public/images', $fileName);
+            $data['gambar_konten'] = $path;
+        }
+        
+        $konten = Konten::create($data);
         return response()->json($konten, 201);
     }
 
@@ -45,26 +50,27 @@ class KontenController extends Controller
             'title' => 'sometimes|required|string|max:255',
             'deskripsi' => 'sometimes|required|string',
             'kategori_konten' => 'sometimes|required|in:food,news,travel',
-            'gambar_konten' => 'nullable|image',
+            'gambar_konten' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg',
         ]);
 
         $konten = Konten::findOrFail($id);
+        $data = $request->all();
 
         if ($request->hasFile('gambar_konten')) {
-            // Hapus gambar lama jika ada
-            if ($konten->gambar_konten && file_exists(public_path('images') . '/' . $konten->gambar_konten)) {
-                unlink(public_path('images') . '/' . $konten->gambar_konten);
+            $file = $request->file('gambar_konten');
+            $tanggalSekarang = now()->format('Ymd_His');
+            $extension = $file->getClientOriginalExtension();
+            $fileName = $tanggalSekarang . '.' . $extension;
+            $path = $file->storeAs('public/images', $fileName);
+
+            if (Storage::exists($konten->gambar_konten)) {
+                Storage::delete($konten->gambar_konten);
             }
-    
-            // Unggah gambar baru
-            $image = $request->file('gambar_konten');
-            $imageName = time().'.'.$image->getClientOriginalExtension();
-            $image->move(public_path('images'), $imageName);
-            $request->merge(['gambar_konten' => $imageName]);
+
+            $data['gambar_konten'] = $path;
         }
 
-        $konten->update($request->all());
-
+        $konten->update($data);
         return response()->json($konten);
     }
 
