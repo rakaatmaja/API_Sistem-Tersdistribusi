@@ -80,7 +80,6 @@ class KontenController extends Controller
         $konten->delete();
 
         return response()->json(['status' => 'Delete successfully'], 200);
-        return response()->json(null, 204);
     }
 
     public function getKontenByKategori($kategori)
