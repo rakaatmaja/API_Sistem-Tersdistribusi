@@ -24,8 +24,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/komen', [KomenController::class, 'index']);
     Route::get('/komen/{id}', [KomenController::class, 'show']);
     Route::get('/komen/konten/{id_konten}', [KomenController::class, 'getByKonten']);
-    Route::post('/konten/{id_konten}/create', [KomenController::class, 'store']);
-    Route::patch('/komen/update/{id}', [KomenController::class, 'update']);
-    Route::delete('/komen/delete/{id}', [KomenController::class, 'destroy']);
+    // Route::post('/konten/{id_konten}/create', [KomenController::class, 'store']);
+    // Route::patch('/komen/update/{id}', [KomenController::class, 'update']);
+    // Route::delete('/komen/delete/{id}', [KomenController::class, 'destroy']);
+    Route::post('/komen/create/{id_konten}', [KomenController::class, 'storeById']);
+    Route::patch('/komen/update/{id_komen}', [KomenController::class, 'update']);
+    Route::delete('/komen/delete/{id_komen}', [KomenController::class, 'destroy']);
     Route::get('/logout', [AuthController::class, 'logout']);
 });
