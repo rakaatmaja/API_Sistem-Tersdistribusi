@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
@@ -54,5 +55,13 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
 
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function user(Request $request)
+    {
+        return response()->json([
+            'user' => Auth::user(),
+            'message' => 'success'
+        ]);
     }
 }
