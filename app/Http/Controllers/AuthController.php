@@ -26,11 +26,11 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'category' => 'pengguna umum',
+            'category' => 'pengguna',
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
-
+        
         return response()->json(['status' => 'Register successfully', 'access_token' => $token, 'token_type' => 'Bearer']);
     }
 
@@ -40,20 +40,25 @@ class AuthController extends Controller
             'email' => 'required|string|email',
             'password' => 'required|string',
         ]);
-
+    
         $user = User::where('email', $request->email)->first();
-
+    
         if (! $user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
-
+    
         $token = $user->createToken('auth_token')->plainTextToken;
-
-        return response()->json(['status' => 'Login successfully', 'access_token' => $token, 'token_type' => 'Bearer']);
+    
+        return response()->json([
+            'status' => 'Login successfully',
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'category' => $user->category // Menambahkan kategori pengguna ke respons JSON
+        ]);
     }
-
+    
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();

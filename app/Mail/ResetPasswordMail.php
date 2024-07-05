@@ -31,8 +31,8 @@ class ResetPasswordMail extends Mailable
      */
     public function build()
     {
-        $resetUrl = url('/api/password/reset?token=' . $this->token . '&email=' . $this->email);
-
+        $resetUrl = url('/fpassword?token=' . $this->token . '&email=' . urlencode($this->email));
+    
         return $this->subject('Reset Password Notification')
                     ->from('example@example.com', config('app.name'))
                     ->to($this->email)
@@ -45,4 +45,5 @@ class ResetPasswordMail extends Mailable
                         "<p>If you did not request a password reset, no further action is required.</p>"
                     );
     }
+    
 }
